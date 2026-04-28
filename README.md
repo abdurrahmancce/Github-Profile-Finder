@@ -1,4 +1,4 @@
-# 🚀 GitFinder — GitHub Profile Explorer
+# 🚀 Github-Profile-Finder
 
 A sleek and modern GitHub Profile Finder built with **HTML, CSS, and JavaScript**.  
 Search any GitHub username and instantly explore profile details, repositories, followers, and more using the GitHub REST API.
@@ -11,7 +11,7 @@ Designed with a futuristic **glassmorphism + terminal-inspired UI** for a clean 
 
 
 ```bash
-https://github.com/abdurrahmancce/Github-Profile-Finder
+https://abdurrahmancce.github.io/Github-Profile-Finder/
 ```
 
 ---
