@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitFinder — GitHub Profile Explorer</title>
+
+  <!-- Google Fonts: Syne (display) + Space Mono (monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Decorative background elements ── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- ────────────── HEADER ────────────── -->
+  <header class="site-header">
+    <div class="logo">
+      <!-- GitHub Octocat mark (inline SVG) -->
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8
+          8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04
+          -3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7
+          3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838
+          1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998
+          .108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93
+          0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176
+          0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405
+          1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23
+          .645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22
+          0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22
+          0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57
+          C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </svg>
+      <span>ProfileFinder</span>
+    </div>
+    <p class="tagline">// explore any github profile</p>
+  </header>
+
+  <!-- ────────────── MAIN ────────────── -->
+  <main class="main-content">
+
+    <!-- Hero + Search -->
+    <section class="search-section">
+      <h1 class="hero-title">
+        <span class="title-line">Find any</span>
+        <span class="title-accent">GitHub</span>
+        <span class="title-line">profile.</span>
+      </h1>
+
+      <div class="search-wrapper">
+        <div class="search-box" id="searchBox">
+          <span class="search-prefix">$ github user&nbsp;</span>
+          <input
+            type="text"
+            id="usernameInput"
+            placeholder="enter username..."
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="GitHub username"
+          />
+          <button id="searchBtn" aria-label="Search">
+            <!-- Search icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </button>
+        </div>
+        <p class="search-hint">Press <kbd>Enter</kbd> or click the button to search</p>
+      </div>
+
+      <!-- Last searched badge -->
+      <div class="last-searched" id="lastSearched" hidden>
+        <span class="last-label">Last searched:</span>
+        <button id="lastSearchBtn" class="last-username-btn"></button>
+      </div>
+    </section>
+
+    <!-- ── Loading indicator ── -->
+    <div class="loading" id="loading" aria-live="polite" hidden>
+      <div class="loading-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <p class="loading-text">fetching profile data<span class="blink">_</span></p>
+    </div>
+
+    <!-- ── Error card ── -->
+    <div class="error-card" id="errorCard" role="alert" hidden>
+      <span class="error-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </span>
+      <div>
+        <p class="error-title">Oops!</p>
+        <p id="errorMsg" class="error-message">User not found.</p>
+      </div>
+    </div>
+
+    <!-- ────────────── RESULTS ────────────── -->
+    <section class="results" id="results" hidden aria-live="polite">
+
+      <!-- Profile Card -->
+      <div class="profile-card" id="profileCard">
+
+        <div class="profile-top">
+          <!-- Avatar with animated ring -->
+          <div class="avatar-wrap">
+            <img id="avatar" src="" alt="GitHub avatar" class="avatar" />
+          </div>
+
+          <!-- User info -->
+          <div class="profile-info">
+            <h2 id="name" class="profile-name"></h2>
+            <a id="usernameLink" href="#" target="_blank" rel="noopener" class="profile-username"></a>
+            <p id="bio" class="profile-bio"></p>
+
+            <div class="profile-meta">
+              <!-- Location -->
+              <span id="locationItem" class="meta-item" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                  <circle cx="12" cy="9" r="2.5"/>
+                </svg>
+                <span id="locationText"></span>
+              </span>
+              <!-- Blog / website -->
+              <a id="blogItem" href="#" target="_blank" rel="noopener" class="meta-item meta-link" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                <span id="blogText"></span>
+              </a>
+              <!-- Twitter -->
+              <span id="twitterItem" class="meta-item" hidden>
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span id="twitterText"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-value" id="repoCount">—</span>
+            <span class="stat-label">Repositories</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-value" id="followerCount">—</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-value" id="followingCount">—</span>
+            <span class="stat-label">Following</span>
+          </div>
+          <div class="stat-divider" aria-hidden="true"></div>
+          <div class="stat-item">
+            <span class="stat-value" id="gistCount">—</span>
+            <span class="stat-label">Gists</span>
+          </div>
+        </div>
+
+        <!-- Member since / joined date -->
+        <p class="joined-date" id="joinedDate"></p>
+
+      </div><!-- /.profile-card -->
+
+      <!-- Repositories grid -->
+      <div class="repos-section">
+        <h3 class="repos-title">
+          <span class="bracket">[</span> Recent Repositories <span class="bracket">]</span>
+        </h3>
+        <div class="repos-grid" id="reposGrid">
+          <!-- Injected by JS -->
+        </div>
+        <a id="viewAllLink" href="#" target="_blank" rel="noopener" class="view-all-btn">
+          View all repositories →
+        </a>
+      </div>
+
+    </section><!-- /#results -->
+
+  </main>
+
+  <!-- ────────────── FOOTER ────────────── -->
+  <footer class="site-footer">
+    <p>Powered by the <a href="https://docs.github.com/en/rest" target="_blank" rel="noopener">GitHub REST API</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
